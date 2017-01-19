@@ -1,4 +1,15 @@
-module.exports = function(modules, appRequire, appModules) {
+/**
+ * Special require function
+ * require sequence User Defined > Version > APPGlobal
+ * @param  {[type]} modules    [description]
+ * @param  {[type]} appRequire [description]
+ * @param  {[type]} appModules [description]
+ * @return {[type]}            [description]
+ */
+module.exports = function(modules, appRequire, appModules, versionRequire, versionModules) {
+
+
+
   function require(name) {
     var mod = modules[name];
     let req = require;
@@ -8,8 +19,13 @@ module.exports = function(modules, appRequire, appModules) {
     }
 
     if (!mod) {
-        //if(appModules) {
-            if(appRequire && appModules[name] ) {
+            if(versionRequire && versionModules[name]) {
+                mod = versionModules[name];
+                req =  versionRequire;
+                if (mod.isInitialized) {
+                  return mod.module.exports;
+                }
+            }else if(appRequire && appModules[name] ) {
                 mod = appModules[name];
                 req =  appRequire;
                 if (mod.isInitialized) {
@@ -21,7 +37,6 @@ module.exports = function(modules, appRequire, appModules) {
                   'Requiring unknown module "' + name + '"'
                 );
             }
-        //}
     }
 
     if (mod.hasError) {

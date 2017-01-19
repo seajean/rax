@@ -109,6 +109,7 @@ function genBuiltinModules(modules, moduleFactories, context) {
 function genNativeModules(modules, instanceId) {
   if (typeof NativeModules === 'object') {
     for (let name in NativeModules) {
+
       let moduleName = MODULE_NAME_PREFIX + name;
       modules[moduleName] = {
         module: {exports: {}},
@@ -154,15 +155,15 @@ function genNativeModules(modules, instanceId) {
  */
 let requireMap = {};
 let appModules = {};
+
+let requireVersionMap = {};
+let versionModules = {};
+
 function genBuiltinAppModule(moduleFactories) {
     for (let moduleName in moduleFactories) {
-
       if(appModules[moduleName]) {
-          //console.log('registing module has exist:::' + moduleName);
           return;
       }
-
-      //console.log('gening app module:::' + moduleName);
       appModules[moduleName] = {
         factory: moduleFactories[moduleName],
         module: {exports: {}},
@@ -172,6 +173,26 @@ function genBuiltinAppModule(moduleFactories) {
     return appModules;
 }
 
+function genSDKModule(moduleFactories, sdkVersion, context) {
+
+
+    for (let moduleName in moduleFactories) {
+
+        /*
+      if(versionModules[sdkVersion][moduleName]) {
+          return;
+      }
+      */
+      //console.log('gening SDK Module:::' + moduleName + sdkVersion);
+      versionModules[sdkVersion][moduleName] = {
+        factory: moduleFactories[moduleName].bind(context),
+        module: {exports: {}},
+        isInitialized: false,
+      };
+    }
+    return versionModules[sdkVersion];
+}
+
 export function createInstance(instanceId, __weex_code__, __weex_options__, __weex_data__, __weex_config__) {
   let instance = instances[instanceId];
 
@@ -179,13 +200,23 @@ export function createInstance(instanceId, __weex_code__, __weex_options__, __we
   //===============================
   //增加app require的模块
   let appKey = __weex_options__['appKey'];
-
+  let sdkVersion = __weex_options__['sdkVersion'] || '1.0.0';
 
 
   let appRequire = requireMap[appKey];
+  let versionRequire =  requireVersionMap[sdkVersion];
+
   if(!appRequire) {
       appRequire =  require('./require.weex')(appModules);
       requireMap[appKey] = appRequire;
+  }
+
+
+
+  if(sdkVersion && !versionRequire) {
+      versionModules[sdkVersion] = {};
+      versionRequire = require('./require.weex')(versionModules[sdkVersion]);
+      requireVersionMap[sdkVersion] =  versionRequire;
   }
   //================================
 
@@ -214,10 +245,10 @@ export function createInstance(instanceId, __weex_code__, __weex_options__, __we
     };
 
     // Generate native modules map at instance init
-    genNativeModules(modules, instanceId);
+    genNativeModules(versionModules[sdkVersion], instanceId);
     const __weex_define__ = require('./define.weex')(modules);
     // add appKey for special use.
-    const __weex_require__ = require('./require.weex')(modules, appRequire, appModules);
+    const __weex_require__ = require('./require.weex')(modules, appRequire, appModules, versionRequire, versionModules[sdkVersion]);
     const __weex_downgrade__ = require('./downgrade.weex')(__weex_require__);
     // FontFace
     document.fonts = {
@@ -364,17 +395,22 @@ export function createInstance(instanceId, __weex_code__, __weex_options__, __we
 
     Object.assign(window, builtinGlobals);
 
-    const moduleFactories = {...ModuleFactories, ...builtinModules};
+    //const moduleFactories = {...ModuleFactories};
     const appModuleFac = {...builtInApps};
+    const versionModulesFactories = {...ModuleFactories, ...builtinModules};
 
+
+    /*
     genBuiltinModules(
       modules,
       moduleFactories,
       window
     );
+    */
 
+
+    genSDKModule(versionModulesFactories, sdkVersion, window)
     genBuiltinAppModule(appModuleFac);
-
 
     //inject app global env
     /*
