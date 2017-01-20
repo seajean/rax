@@ -386,9 +386,9 @@ export function createInstance(instanceId, __weex_code__, __weex_options__, __we
     try {
         builtinGlobals = __weex_config__.services.builtinGlobals;
 
-        builtInApps =  __weex_config__.services.buildInApps;
+        builtInApps =  __weex_config__.services.globalService;
 
-        builtinModules = __weex_config__.services.builtinModules;
+        builtinModules = __weex_config__.services.moduleService;
     } catch (e) {}
 
 
