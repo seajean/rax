@@ -183,6 +183,7 @@ function genSDKModule(moduleFactories, sdkVersion, context) {
           return;
       }
       */
+
       //console.log('gening SDK Module:::' + moduleName + sdkVersion);
       versionModules[sdkVersion][moduleName] = {
         factory: moduleFactories[moduleName].bind(context),
@@ -226,14 +227,19 @@ export function createInstance(instanceId, __weex_code__, __weex_options__, __we
     const responseEnd = Date.now();
     const __weex_env__ = typeof WXEnvironment === 'object' && WXEnvironment || {};
 
-    const Promise = require('runtime-shared/dist/promise.function')();
+    const Promise = require('fastpromise');
     const URL = require('runtime-shared/dist/url.function')();
     const URLSearchParams = require('runtime-shared/dist/url-search-params.function')();
     const FontFace = require('runtime-shared/dist/fontface.function')();
 
     const document = new Document(instanceId, __weex_options__.bundleUrl, null, Listener);
+
+
     const location = new URL(__weex_options__.bundleUrl);
     const modules = {};
+
+
+    //Promise._setImmediateFn(function(fn){ fn() });
 
     instance = instances[instanceId] = {
       document,
@@ -245,7 +251,7 @@ export function createInstance(instanceId, __weex_code__, __weex_options__, __we
     };
 
     // Generate native modules map at instance init
-    genNativeModules(versionModules[sdkVersion], instanceId);
+    genNativeModules(modules, instanceId);
     const __weex_define__ = require('./define.weex')(modules);
     // add appKey for special use.
     const __weex_require__ = require('./require.weex')(modules, appRequire, appModules, versionRequire, versionModules[sdkVersion]);
@@ -400,27 +406,19 @@ export function createInstance(instanceId, __weex_code__, __weex_options__, __we
     const versionModulesFactories = {...ModuleFactories, ...builtinModules};
 
 
-    /*
+
     genBuiltinModules(
       modules,
-      moduleFactories,
+      versionModulesFactories,
       window
     );
-    */
 
 
-    genSDKModule(versionModulesFactories, sdkVersion, window)
+
+    //genSDKModule(versionModulesFactories, sdkVersion, window)
     genBuiltinAppModule(appModuleFac);
 
-    //inject app global env
-    /*
-    let appGlobal = __weex_require__('__app_global__');
-    if(appGlobal && appKey) {
-        if(!appGlobal[appKey]) {
-            appGlobal[appKey] = {};
-        }
-    }
-    */
+
 
     if (__weex_env__.platform !== 'Web') {
       let timing = performance.timing;

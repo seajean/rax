@@ -16,8 +16,9 @@
   },
   "homepage": "https://github.com/alibaba/rax#readme",
   "dependencies": {
-    "runtime-shared": "^0.1.4",
-    "rax": "^0.1.4"
+    "fastpromise": "^1.0.0",
+    "rax": "^0.1.4",
+    "runtime-shared": "^0.1.4"
   },
   "devDependencies": {
     "weex-js-runtime": "^0.17.0-alpha4",
