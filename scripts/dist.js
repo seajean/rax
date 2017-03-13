@@ -6,9 +6,9 @@ const RaxPlugin = require('rax-webpack-plugin');
 const fs = require('fs');
 
 [
-  ['rax-components', 'components', 'Components'],
+  ['rax-components', 'components', 'RaxComponents'],
   ['rax-redux', 'redux', 'RaxRedux'],
-  ['rax-animated', 'animated', 'Animated'],
+  ['rax-animated', 'animated', 'RaxAnimated'],
   ['universal-panresponder', 'panresponder', 'PanResponder'],
   ['universal-platform', 'platform', 'Platform'],
   ['universal-stylesheet', 'stylesheet', 'StyleSheet'],
@@ -107,6 +107,8 @@ dist(getConfig(
     {
       'promise.module': './packages/runtime-shared/src/promise.js',
       'promise.function': './packages/runtime-shared/src/promise.js',
+      'matchMedia.module': './packages/runtime-shared/src/matchMedia.js',
+      'matchMedia.function': './packages/runtime-shared/src/matchMedia.js',
       'url.module': './packages/runtime-shared/src/url.js',
       'url.function': './packages/runtime-shared/src/url.js',
       'url-search-params.module': './packages/runtime-shared/src/url-search-params.js',
@@ -117,7 +119,6 @@ dist(getConfig(
     {
       path: './packages/runtime-shared/dist/',
       filename: '[name].js',
-      sourceMapFilename: '[name].map',
       pathinfo: false,
     },
     {
@@ -125,7 +126,9 @@ dist(getConfig(
     },
     {
       presets: ['es2015']
-    }
+    },
+    null,
+    'hidden-source-map'
   ));
 }).then(() => {
   dist(getConfig(
@@ -174,17 +177,17 @@ dist(getConfig(
   ));
 });
 
-function getConfig(entry, output, moduleOptions, babelLoaderQuery, target) {
+function getConfig(entry, output, moduleOptions, babelLoaderQuery, target, devtool) {
   return {
     target: target || 'node',
-    devtool: 'source-map',
+    devtool: devtool || 'source-map',
     entry: entry,
     output: output,
     plugins: [
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production'),
       }),
-      new webpack.NoErrorsPlugin(),
+      new webpack.NoEmitOnErrorsPlugin(),
       new RaxPlugin(moduleOptions),
       new webpack.optimize.UglifyJsPlugin({
         include: /\.min\.js$/,
@@ -198,7 +201,7 @@ function getConfig(entry, output, moduleOptions, babelLoaderQuery, target) {
       loaders: [{
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel', // 'babel-loader' is also a legal name to reference
+        loader: 'babel-loader', // 'babel-loader' is also a legal name to reference
         query: babelLoaderQuery
       }]
     }

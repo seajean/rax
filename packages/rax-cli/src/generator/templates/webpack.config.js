@@ -52,20 +52,22 @@ if (!isProducation) {
   var ip = internalIp.v4();
   var port = 8080;
   var webUrl = 'http://' + ip + ':' + port;
-  var bundleUrl = 'http://' + ip + ':' + port + '/js/index.bundle.js?wh_weex=true';
+  var bundleUrl = 'http://' + ip + ':' + port + '/js/index.bundle.js';
+  var weexBundleUrl = bundleUrl + '?_wx_tpl=' + bundleUrl;
 
   qrcode.generate(webUrl, {small: true});
   console.log('Web: scan above QRCode ' + webUrl + ' or direct open in browser.\n');
 
-  qrcode.generate(bundleUrl, {small: true});
-  console.log('Weex: scan above QRCode ' + bundleUrl + ' use weex playground.\n');
+  qrcode.generate(weexBundleUrl, {small: true});
+  console.log('Weex: scan above QRCode ' + weexBundleUrl + ' use weex playground.\n');
 }
 
 module.exports = {
   // Compile target should "web" when use hot reload
   target: isProducation ? 'node' : 'web',
 
-  devtool: 'cheap-module-source-map',
+  // devtool: 'inline-source-map',
+
   // These are the "entry points" to our application.
   // This means they will be the "root" imports that are included in JS bundle.
   // The first two entry points enable "hot" CSS and auto-refreshes for JS.

@@ -12,8 +12,25 @@ A universal React-compatible render engine.
   <a href="https://github.com/alibaba/rax/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/rax.svg"></a>
   <a href="https://www.npmjs.com/package/rax"><img src="https://img.shields.io/npm/v/rax.svg"></a>
   <a href="https://www.npmjs.com/package/rax"><img src="https://img.shields.io/npm/dm/rax.svg"></a>
-  <a href="https://travis-ci.org/alibaba/rax"><img src="https://travis-ci.org/alibaba/rax.svg"></a>
+  <a href="https://travis-ci.org/alibaba/rax"><img src="https://travis-ci.org/alibaba/rax.svg?branch=master"></a>
 </p>
+
+---
+
+<p align="center">
+Community
+</p>
+
+* [![Join the chat at https://gitter.im/alibaba/rax](https://badges.gitter.im/alibaba/rax.svg)](https://gitter.im/alibaba/rax?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
+
+* [Stack Overflow](http://stackoverflow.com/questions/tagged/rax)
+
+* [中文论坛](http://react-china.org/c/rax)
+
+* <details>
+  <summary>钉钉群</summary>
+  <a href="http://qr.dingtalk.com/action/joingroup?code=v1,k1,CP2dPkf6aojTT2QdsLM1GK4vDw4x3Q3UMdC96zOTGWzA09r+RLlVDuyQIAt5L+xqo/WU2LKsFRUYCTNKl7J/riENfO/4JdpdPsdf2DCoeF8tH9f9QvubrOUvmN6NriqFXtEUb0fp/hjJPUzBWCyDJCM63BVN7p2I"><img alt="Join the chat at dingtalk" src="https://cloud.githubusercontent.com/assets/677114/23734081/a3651cd6-04b7-11e7-8290-11fb20b722b4.png"></a>
+</details>
 
 ---
 
@@ -23,34 +40,7 @@ Rax is a universal JavaScript library with a largely React-compatible API. If yo
 
 :dart: **Tiny:** 8.0 KB minified + gzipped.
 
-:art: **Universal:** works in browsers, Weex, and Node.js.
-
-## Size Comparison
-
-[Angular 1.5.8](https://unpkg.com/angular@1.5.8/angular.min.js) - 55.4kb (gzip)
-
-<img width="100%" height="5" src="https://cloud.githubusercontent.com/assets/2505411/20559178/59a527a0-b1ae-11e6-9b71-581323ac22f8.png">
-
-[React 15.3.2](https://unpkg.com/react@15.3.2/dist/react.min.js) - 43.7kb (gzip)
-
-<img width="78.88%" height="5" src="https://cloud.githubusercontent.com/assets/2505411/20559178/59a527a0-b1ae-11e6-9b71-581323ac22f8.png">
-
-[Vue 2.1.8](https://unpkg.com/vue@2.1.8/dist/vue.runtime.min.js) - 17.9kb (gzip)
-
-<img width="32.25%" height="5" src="https://cloud.githubusercontent.com/assets/2505411/20559178/59a527a0-b1ae-11e6-9b71-581323ac22f8.png">
-
-[Rax 0.0.2](https://unpkg.com/rax@0.0.2/dist/rax.min.js) - 8.0kb (gzip)
-
-<img width="14.44%" height="5" src="https://cloud.githubusercontent.com/assets/2505411/20559178/59a527a0-b1ae-11e6-9b71-581323ac22f8.png">
-
-## Server-side Rendering Comparison
-
-Benchmark run on a MacBook Pro 2.4GHz Intel Core i5 and 8GB 1600MHz DDR3 with Node.js v6.9.2. For more information, please refer to [benchmark repository](https://github.com/taobaofed/server-side-rendering-comparison).
-
-|Library       |renderToSring   |
-|--------------|-----------------|
-| React@15.4.2 | 94.93 ops/sec   |
-| Rax@0.1.2    | 154 ops/sec(faster) |
+:art: **Universal:** works in browsers, Weex, Node.js and could works more container that implement [driver specification](./docs/driver-spec.md).
 
 ## Quick Start
 
@@ -91,6 +81,7 @@ render(<Hello name="world" />);
 ```
 
 More examples take a look at the [`examples`](/examples/) folder:
+* [Components](./examples/components)
 * [Redux](/examples/redux)
 * [Game2048](/examples/game2048)
 * [Drag](/examples/drag)
@@ -149,7 +140,49 @@ Then, you can run several commands:
 * `npm run build` creates `lib` and `dist` folder with all the packages.
 * `npm start` start local server with `examples` folder.
 
+
+## Core Team
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top">
+        <img width="128" height="128" src="https://github.com/yuanyan.png?s=128">
+        <br>
+        <a href="https://github.com/yuanyan">@yuanyan</a>
+        <p>Core</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="128" height="128" src="https://github.com/imsobear.png?s=128">
+        <br>
+        <a href="https://github.com/imsobear">@imsobear</a>
+        <p>Development</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="128" height="128" src="https://github.com/yacheng.png?s=128">
+        <br>
+        <a href="https://github.com/yacheng">@yacheng</a>
+        <p>Components</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="128" height="128" src="https://github.com/boiawang.png?s=128">
+        <br>
+        <a href="https://github.com/boiawang">@boiawang</a>
+        <p>Babel Loaders &amp; Plugins</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="128" height="128" src="https://github.com/noyobo.png?s=128">
+        <br>
+        <a href="https://github.com/noyobo">@noyobo</a>
+        <p>Webpack Plugins</p>
+      </td>
+     </tr>
+  </tbody>
+</table>
+
 ---
 <a href="https://weex-project.io/">
-  <img alt="Weex Logo" src="https://camo.githubusercontent.com/11b6ddd7364b6fd42c9efd63939150a950b0de1a/68747470733a2f2f696d672e616c6963646e2e636f6d2f7470732f5442317a424c6150585858585858655858585858585858585858582d3132312d35392e737667" width="200">
+  <img alt="Weex Logo" src="https://img.alicdn.com/tps/TB1zBLaPXXXXXXeXXXXXXXXXXXX-121-59.svg" width="200">
 </a>
+
+**[⬆ back to top](#top)**

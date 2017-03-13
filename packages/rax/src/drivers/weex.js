@@ -9,7 +9,6 @@ const STYLE = 'style';
 const ID = 'id';
 const TEXT = 'text';
 const FULL_WIDTH_REM = 750;
-const DOCUMENT_FRAGMENT_NODE = 11;
 const nodeMaps = {};
 /* global __weex_document__ */
 const document = typeof __weex_document__ === 'object' ?
@@ -21,14 +20,11 @@ const Driver = {
     return nodeMaps[id];
   },
 
-  getChildNodes(node) {
-    return node.children;
+  getParentNode(node) {
+    return node.parentNode;
   },
 
   createBody() {
-    // Close batched updates
-    document.open();
-
     if (document.body) {
       return document.body;
     }
@@ -38,13 +34,6 @@ const Driver = {
     documentElement.appendChild(body);
 
     return body;
-  },
-
-  createFragment() {
-    return {
-      nodeType: DOCUMENT_FRAGMENT_NODE,
-      childNodes: []
-    };
   },
 
   createComment(content) {
@@ -87,18 +76,11 @@ const Driver = {
   },
 
   appendChild(node, parent) {
-    if (parent.nodeType === DOCUMENT_FRAGMENT_NODE) {
-      return parent.childNodes.push(node);
-    } else if (node.nodeType === DOCUMENT_FRAGMENT_NODE) {
-      return node.childNodes.map(child => {
-        return this.appendChild(child, parent);
-      });
-    } else {
-      return parent.appendChild(node);
-    }
+    return parent.appendChild(node);
   },
 
   removeChild(node, parent) {
+    parent = parent || node.parentNode;
     let id = node.attr && node.attr[ID];
     if (id != null) {
       nodeMaps[id] = null;
@@ -107,6 +89,7 @@ const Driver = {
   },
 
   replaceChild(newChild, oldChild, parent) {
+    parent = parent || oldChild.parentNode;
     let previousSibling = oldChild.previousSibling;
     let nextSibling = oldChild.nextSibling;
     this.removeChild(oldChild, parent);
@@ -121,23 +104,13 @@ const Driver = {
   },
 
   insertAfter(node, after, parent) {
-    if (node.nodeType === DOCUMENT_FRAGMENT_NODE) {
-      return node.childNodes.map((child, index) => {
-        return this.insertAfter(child, node.childNodes[index - 1] || after, parent);
-      });
-    } else {
-      return parent.insertAfter(node, after);
-    }
+    parent = parent || after.parentNode;
+    return parent.insertAfter(node, after);
   },
 
   insertBefore(node, before, parent) {
-    if (node.nodeType === DOCUMENT_FRAGMENT_NODE) {
-      return node.childNodes.map((child, index) => {
-        return this.insertBefore(child, before, parent);
-      });
-    } else {
-      return parent.insertBefore(node, before);
-    }
+    parent = parent || before.parentNode;
+    return parent.insertBefore(node, before);
   },
 
   addEventListener(node, eventName, eventHandler) {
@@ -149,7 +122,7 @@ const Driver = {
   },
 
   removeAllEventListeners(node) {
-    // noop
+    // Noop
   },
 
   removeAttribute(node, propKey, propValue) {
@@ -157,7 +130,7 @@ const Driver = {
       nodeMaps[propValue] = null;
     }
     // Weex native will crash when pass null value
-    return node.setAttr(propKey, undefined);
+    return node.setAttr(propKey, undefined, false);
   },
 
   setAttribute(node, propKey, propValue) {
@@ -165,7 +138,7 @@ const Driver = {
       nodeMaps[propValue] = node;
     }
 
-    return node.setAttr(propKey, propValue);
+    return node.setAttr(propKey, propValue, false);
   },
 
   setStyles(node, styles) {
@@ -178,19 +151,20 @@ const Driver = {
   },
 
   beforeRender() {
+    // Turn off batched updates
+    document.open();
+
     // Init rem unit
     setRem(this.getWindowWidth() / FULL_WIDTH_REM);
   },
 
   afterRender() {
-    if (document && document.listener && document.listener.createFinish) {
-      document.listener.createFinish(
-        () => {
-          // Make updates batched
-          document.close();
-        }
-      );
+    if (document.listener && document.listener.createFinish) {
+      document.listener.createFinish();
     }
+
+    // Turn on batched updates
+    document.close();
   },
 
   getWindowWidth() {
